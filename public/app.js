@@ -157,6 +157,19 @@ function renderAll(data) {
 function renderCRM(d) {
   const el = document.getElementById('panel-crm');
   if (d?.error) { el.querySelector('.panel-content').innerHTML = `<div class="panel-error">${d.error}</div>`; return; }
+
+  const recent = (d?.recent || []).map(c => {
+    const name = [c.first_name, c.last_name].filter(Boolean).join(' ') || c.email || '(no name)';
+    const sub  = c.company || c.email || '';
+    const date = c.created_at ? new Date(c.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
+    return `
+      <div class="crm-contact-row">
+        <div class="crm-contact-name">${esc(name)}</div>
+        <div class="crm-contact-meta">${esc(sub)}</div>
+        <div class="crm-contact-date">${date}</div>
+      </div>`;
+  }).join('');
+
   el.querySelector('.panel-content').innerHTML = `
     <div class="crm-stats">
       <div class="stat-block">
@@ -167,7 +180,8 @@ function renderCRM(d) {
         <div class="stat-number">${d?.total ?? '—'}</div>
         <div class="stat-label">Total contacts</div>
       </div>
-    </div>`;
+    </div>
+    ${recent ? `<div class="crm-recent">${recent}</div>` : ''}`;
 }
 
 // ─── Social Forge ─────────────────────────────────────────────────────────────

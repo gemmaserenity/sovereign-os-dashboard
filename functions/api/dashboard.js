@@ -47,17 +47,19 @@ function settled(result) {
 async function fetchCRM(db) {
   const cutoff = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString();
 
-  const [allContacts, newContacts] = await Promise.all([
+  const [allContacts, newContacts, recent] = await Promise.all([
     db.get('contacts', { select: 'id', limit: 1 }, { 'Prefer': 'count=exact' })
       .catch(() => []),
     db.query('contacts', `select=id&created_at=gte.${cutoff}`)
+      .catch(() => []),
+    db.query('contacts', 'select=id,first_name,last_name,email,company,created_at&order=created_at.desc&limit=5')
       .catch(() => [])
   ]);
 
-  // PostgREST returns count in Content-Range header; we fall back to array length
   return {
-    total: Array.isArray(allContacts) ? allContacts.length : 0,
-    new_14d: Array.isArray(newContacts) ? newContacts.length : 0
+    total:   Array.isArray(allContacts) ? allContacts.length : 0,
+    new_14d: Array.isArray(newContacts) ? newContacts.length : 0,
+    recent:  Array.isArray(recent) ? recent : []
   };
 }
 
