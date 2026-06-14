@@ -216,8 +216,18 @@ header h1 {
 }
 
 @media (max-width: 640px) {
-  #dashboard { grid-template-columns: 1fr; }
-  header h1 { font-size: 15px; }
+  :root { --panel-pad: 12px; --gap: 8px; }
+  #dashboard { grid-template-columns: repeat(2, 1fr); }
+  .panel-action { grid-column: 1 / -1; }
+  header { padding: 0 12px; height: 44px; }
+  header h1 { font-size: 14px; }
+  #last-updated { display: none; }
+  .panel-title { font-size: 11px; letter-spacing: 0.4px; }
+  .panel-header { margin-bottom: 8px; }
+  .stat-number { font-size: 28px !important; }
+  .panel-content { font-size: 13px; }
+  .crm-contact-name { font-size: 12px; }
+  .crm-contact-meta, .crm-contact-date { font-size: 10px; }
 }
 
 /* ─── Panel Base ─────────────────────────────────────────────────────────────── */
