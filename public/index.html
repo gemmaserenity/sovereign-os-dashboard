@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1A1A1A">
+  <title>Sovereign OS</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<!-- ─── Login Screen ─────────────────────────────────────────────────── -->
+<div id="login-screen" style="display:none">
+  <div class="login-card">
+    <h1>Sovereign OS</h1>
+    <p class="subtitle">Command Center — Gemma &amp; Sascha</p>
+
+    <select id="login-username">
+      <option value="gemma">Gemma</option>
+      <option value="sascha">Sascha</option>
+    </select>
+
+    <input type="password" id="login-password" placeholder="Password" autocomplete="current-password">
+
+    <button class="btn-primary" id="login-btn">Sign In</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- ─── App Shell ────────────────────────────────────────────────────── -->
+<div id="app">
+
+  <header>
+    <h1>⚡ Sovereign OS</h1>
+    <div class="header-right">
+      <span class="pulse-dot"></span>
+      <span id="last-updated">Loading…</span>
+      <span id="user-label" style="color:#fff;font-weight:700"></span>
+      <button class="btn-icon" id="theme-btn" title="Toggle dark mode">🌙</button>
+      <button class="btn-icon" id="logout-btn" title="Sign out">⇥</button>
+    </div>
+  </header>
+
+  <div id="dashboard">
+
+    <!-- 1. CRM Contacts -->
+    <div class="panel panel-crm" id="panel-crm" data-url="https://crm.gemmaserenity.com">
+      <div class="panel-header">
+        <span class="panel-title">CRM Contacts</span>
+        <span class="panel-icon">👥</span>
+      </div>
+      <div class="panel-content">
+        <div class="skeleton"></div>
+        <div class="skeleton" style="width:60%"></div>
+      </div>
+    </div>
+
+    <!-- 2. Social Media Forge -->
+    <div class="panel panel-social" id="panel-social" data-url="https://content-engine.gemmaserenity.com">
+      <div class="panel-header">
+        <span class="panel-title">Social Media Forge</span>
+        <span class="panel-icon">✍️</span>
+      </div>
+      <div class="panel-content">
+        <div class="skeleton"></div>
+        <div class="skeleton"></div>
+        <div class="skeleton" style="width:70%"></div>
+      </div>
+    </div>
+
+    <!-- 3. Email Sequences -->
+    <div class="panel panel-email" id="panel-email" data-url="https://mailer.gemmaserenity.com">
+      <div class="panel-header">
+        <span class="panel-title">Email Sequences</span>
+        <span class="panel-icon">📧</span>
+      </div>
+      <div class="panel-content">
+        <div class="skeleton"></div>
+        <div class="skeleton" style="width:80%"></div>
+        <div class="skeleton" style="width:50%"></div>
+      </div>
+    </div>
+
+    <!-- 4. Revenue -->
+    <div class="panel panel-revenue" id="panel-revenue" data-url="#">
+      <div class="panel-header">
+        <span class="panel-title">Revenue</span>
+        <span class="panel-icon">💰</span>
+      </div>
+      <div class="panel-content">
+        <div class="skeleton"></div>
+        <div class="skeleton" style="width:60%"></div>
+      </div>
+    </div>
+
+    <!-- 5. Calendar -->
+    <div class="panel panel-calendar" id="panel-calendar"
+         data-url="https://calendar.google.com/calendar/r?authuser=gorokhoff.gemma%40gmail.com">
+      <div class="panel-header">
+        <span class="panel-title">Calendar</span>
+        <span class="panel-icon">📅</span>
+      </div>
+      <div class="panel-content">
+        <div class="skeleton"></div>
+        <div class="skeleton" style="width:75%"></div>
+      </div>
+    </div>
+
+    <!-- 6. To-Do -->
+    <div class="panel panel-todo" id="panel-todo" data-url="https://next.themanifestingqueen.com">
+      <div class="panel-header">
+        <span class="panel-title">To-Do</span>
+        <span class="panel-icon">📌</span>
+      </div>
+      <div class="panel-content">
+        <div class="task-list" id="todo-list">
+          <div class="skeleton"></div>
+          <div class="skeleton" style="width:80%"></div>
+        </div>
+        <div class="add-task-row">
+          <input type="text" class="add-task-input" id="add-task-input" placeholder="Add a task…" maxlength="200">
+          <button class="add-task-btn" id="add-task-btn">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. Done -->
+    <div class="panel panel-done" id="panel-done" data-url="https://next.themanifestingqueen.com">
+      <div class="panel-header">
+        <span class="panel-title">Done</span>
+        <span class="panel-icon">✅</span>
+      </div>
+      <div class="panel-content">
+        <div class="task-list" id="done-list">
+          <div class="skeleton"></div>
+          <div class="skeleton" style="width:65%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. Action Input -->
+    <div class="panel panel-action action-panel" id="panel-action">
+      <div class="panel-header">
+        <span class="panel-title">Action Input</span>
+        <span class="panel-icon">🎯</span>
+      </div>
+      <div class="panel-content">
+        <textarea
+          class="action-textarea"
+          id="action-textarea"
+          placeholder="Type an instruction… (Ctrl+Enter to send)&#10;&#10;e.g. 'Add task: follow up with Robert Roth tomorrow'&#10;or 'Enroll alice@example.com in the pre-call sequence'"
+        ></textarea>
+
+        <div class="action-controls">
+          <button class="btn-action-send" id="action-send-btn">Send ↩</button>
+          <span class="action-status" id="action-status"></span>
+        </div>
+
+        <!-- Confirmation bar (hidden until a reversible action is proposed) -->
+        <div class="action-confirm-bar" id="action-confirm-bar" style="display:none">
+          <p id="action-confirm-text"></p>
+          <div class="confirm-btns">
+            <button class="btn-confirm yes" id="action-yes-btn">✓ Confirm</button>
+            <button class="btn-confirm no"  id="action-no-btn">✗ Dismiss</button>
+          </div>
+        </div>
+
+        <div class="action-history" id="action-history"></div>
+      </div>
+    </div>
+
+  </div><!-- /dashboard -->
+</div><!-- /app -->
+
+<!-- ─── Revenue Forecast Modal ───────────────────────────────────────── -->
+<div class="modal-overlay" id="forecast-modal" style="display:none"
+     onclick="if(event.target===this) this.style.display='none'">
+  <div class="modal">
+    <h2>Revenue Forecast</h2>
+
+    <label for="fm-month">Month</label>
+    <input type="date" id="fm-month">
+
+    <label for="fm-amount">Projected Amount ($)</label>
+    <input type="number" id="fm-amount" min="0" step="100" placeholder="e.g. 15000">
+
+    <label for="fm-notes">Notes (optional)</label>
+    <textarea id="fm-notes" style="min-height:60px" placeholder="AI Advisory retainer, 2 new clients…"></textarea>
+
+    <div class="modal-btns">
+      <button class="btn-modal-cancel" id="fm-cancel">Cancel</button>
+      <button class="btn-modal-save"   id="fm-save">Save</button>
+    </div>
+  </div>
+</div>
+
+<script src="/app.js"></script>
+</body>
+</html>

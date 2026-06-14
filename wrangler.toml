@@ -1,0 +1,10 @@
+name = "sovereign-os-dashboard"
+compatibility_date = "2026-06-01"
+pages_build_output_dir = "public"
+
+# KV namespace for auth sessions and per-user theme preference.
+# Create with: wrangler kv:namespace create SOVDASH_KV
+# Then paste the returned id below.
+[[kv_namespaces]]
+binding = "SOVDASH_KV"
+id = "dece1700ce434d1d8aacb7b94a8790c0"
