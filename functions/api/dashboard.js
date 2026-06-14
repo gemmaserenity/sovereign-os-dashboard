@@ -238,7 +238,7 @@ async function fetchNextTasks(env) {
   return raw.map(t => ({
     id:     t.id   || String(Math.random()),
     title:  t.title || t.text || t.name || '(untitled)',
-    done:   t.done === true || t.completed === true || t.status === 'done',
+    done:   t.status === 'completed',
     owner:  'gemma',
     source: 'next'
   }));
