@@ -87,7 +87,7 @@ export async function onRequestPost({ request, env }) {
     };
   }
 
-  const status = claudeResult.requires_confirmation ? 'pending_confirmation' : 'pending';
+  const status = 'pending_confirmation';
 
   const [action] = await db.insert('sovdash_actions', {
     user_id:        session.userId,
