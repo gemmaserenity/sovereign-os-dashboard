@@ -42,6 +42,7 @@ export async function onRequestOptions() {
 
 // POST /api/actions — submit new instruction
 export async function onRequestPost({ request, env }) {
+  try {
   const session = await verifySession(request, env);
   if (!session) return errorResponse('Unauthorized', 401);
 
@@ -112,6 +113,9 @@ export async function onRequestPost({ request, env }) {
   }
 
   return jsonResponse({ ok: true, action });
+  } catch (err) {
+    return errorResponse('Action failed: ' + err.message, 500);
+  }
 }
 
 // PATCH /api/actions — confirm a pending action
