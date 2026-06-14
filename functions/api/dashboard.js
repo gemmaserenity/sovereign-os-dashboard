@@ -48,7 +48,7 @@ async function fetchCRM(db) {
   const cutoff = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString();
 
   const [allContacts, newContacts, recent] = await Promise.all([
-    db.get('contacts', { select: 'id', limit: 1 }, { 'Prefer': 'count=exact' })
+    db.get('contacts', { select: 'id' })
       .catch(() => []),
     db.query('contacts', `select=id&created_at=gte.${cutoff}`)
       .catch(() => []),

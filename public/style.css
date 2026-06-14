@@ -216,62 +216,49 @@ header h1 {
 }
 
 @media (max-width: 640px) {
-  :root { --panel-pad: 10px; --gap: 8px; }
+  :root { --panel-pad: 14px; --gap: 10px; }
 
   #dashboard {
-    grid-template-columns: repeat(2, 1fr);
-    padding: 8px;
+    grid-template-columns: 1fr;
+    padding: 10px;
   }
 
-  /* Every panel gets a fixed square-ish height; content clips inside */
+  /* Each panel fills ~47vh so exactly 2 fit per screen */
   .panel {
-    height: 46vw;
+    height: 47vh;
     overflow: hidden;
     display: flex;
     flex-direction: column;
   }
 
-  /* Action panel spans full width and is taller for the textarea */
+  /* Action panel taller to fit textarea */
   .panel-action {
-    grid-column: 1 / -1;
     height: auto;
-    min-height: 180px;
+    min-height: 200px;
   }
 
-  .panel-header { margin-bottom: 6px; flex-shrink: 0; }
-  .panel-title { font-size: 10px; letter-spacing: 0.3px; }
-  .panel-icon { font-size: 14px; }
+  .panel-header { margin-bottom: 10px; flex-shrink: 0; }
+  .panel-title { font-size: 12px; letter-spacing: 0.4px; }
 
-  /* Content area fills remaining height and clips overflow */
+  /* Content fills remaining height, clips overflow */
   .panel-content {
-    font-size: 12px;
+    font-size: 14px;
     flex: 1;
     overflow: hidden;
     min-height: 0;
   }
 
-  header { padding: 0 10px; height: 42px; }
-  header h1 { font-size: 13px; }
+  header { padding: 0 14px; height: 44px; }
+  header h1 { font-size: 15px; }
   #last-updated { display: none; }
 
-  /* Stat numbers smaller to fit in half-screen panel */
-  .stat-number { font-size: 26px !important; }
-  .stat-label  { font-size: 10px; }
+  .stat-number { font-size: 36px !important; }
+  .stat-label  { font-size: 11px; }
 
-  /* CRM contacts tighter */
-  .crm-contact-name { font-size: 11px; }
-  .crm-contact-meta, .crm-contact-date { font-size: 9px; }
-  .crm-contact-row { padding: 4px 0; }
+  .crm-contact-name { font-size: 13px; }
+  .crm-contact-meta, .crm-contact-date { font-size: 11px; }
 
-  /* Calendar tighter */
-  .cal-time  { font-size: 11px; }
-  .cal-title { font-size: 12px; }
-
-  /* Task items tighter */
-  .task-item { padding: 4px 0; }
-  .task-check { width: 16px; height: 16px; font-size: 10px; }
-
-  /* Add task row hidden on mobile (use NEXT app directly) */
+  .task-item { padding: 5px 0; }
   .add-task-row { display: none; }
 }
 
