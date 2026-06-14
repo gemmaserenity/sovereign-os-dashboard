@@ -18,11 +18,8 @@ export async function onRequestPost({ request, env }) {
     if (!password || password.length < 8) {
       return errorResponse('Password must be at least 8 characters', 400);
     }
-    if (!env.SETUP_CODE) {
-      return errorResponse('SETUP_CODE secret not found in environment', 500);
-    }
     if (!setup_code || setup_code !== env.SETUP_CODE) {
-      return errorResponse(`Invalid setup code (received ${setup_code?.length ?? 0} chars, expected ${env.SETUP_CODE.length} chars)`, 403);
+      return errorResponse('Invalid setup code', 403);
     }
 
     const existing = await env.SOVDASH_KV.get(`auth:${username}`);
