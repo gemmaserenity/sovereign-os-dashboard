@@ -216,18 +216,63 @@ header h1 {
 }
 
 @media (max-width: 640px) {
-  :root { --panel-pad: 12px; --gap: 8px; }
-  #dashboard { grid-template-columns: repeat(2, 1fr); }
-  .panel-action { grid-column: 1 / -1; }
-  header { padding: 0 12px; height: 44px; }
-  header h1 { font-size: 14px; }
+  :root { --panel-pad: 10px; --gap: 8px; }
+
+  #dashboard {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 8px;
+  }
+
+  /* Every panel gets a fixed square-ish height; content clips inside */
+  .panel {
+    height: 46vw;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Action panel spans full width and is taller for the textarea */
+  .panel-action {
+    grid-column: 1 / -1;
+    height: auto;
+    min-height: 180px;
+  }
+
+  .panel-header { margin-bottom: 6px; flex-shrink: 0; }
+  .panel-title { font-size: 10px; letter-spacing: 0.3px; }
+  .panel-icon { font-size: 14px; }
+
+  /* Content area fills remaining height and clips overflow */
+  .panel-content {
+    font-size: 12px;
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  header { padding: 0 10px; height: 42px; }
+  header h1 { font-size: 13px; }
   #last-updated { display: none; }
-  .panel-title { font-size: 11px; letter-spacing: 0.4px; }
-  .panel-header { margin-bottom: 8px; }
-  .stat-number { font-size: 28px !important; }
-  .panel-content { font-size: 13px; }
-  .crm-contact-name { font-size: 12px; }
-  .crm-contact-meta, .crm-contact-date { font-size: 10px; }
+
+  /* Stat numbers smaller to fit in half-screen panel */
+  .stat-number { font-size: 26px !important; }
+  .stat-label  { font-size: 10px; }
+
+  /* CRM contacts tighter */
+  .crm-contact-name { font-size: 11px; }
+  .crm-contact-meta, .crm-contact-date { font-size: 9px; }
+  .crm-contact-row { padding: 4px 0; }
+
+  /* Calendar tighter */
+  .cal-time  { font-size: 11px; }
+  .cal-title { font-size: 12px; }
+
+  /* Task items tighter */
+  .task-item { padding: 4px 0; }
+  .task-check { width: 16px; height: 16px; font-size: 10px; }
+
+  /* Add task row hidden on mobile (use NEXT app directly) */
+  .add-task-row { display: none; }
 }
 
 /* ─── Panel Base ─────────────────────────────────────────────────────────────── */
