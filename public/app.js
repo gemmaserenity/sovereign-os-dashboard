@@ -327,7 +327,7 @@ function taskItem(t, isDone) {
       </div>
       <div class="task-text">
         <div>${esc(t.title)}</div>
-        ${t.owner && t.owner !== 'shared' ? `<div class="task-owner">${t.owner}</div>` : ''}
+        ${t.owner === 'sascha' ? `<div class="task-owner">Sascha</div>` : ''}
       </div>
     </div>`;
 }
