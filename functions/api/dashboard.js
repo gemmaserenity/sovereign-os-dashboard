@@ -22,7 +22,7 @@ export async function onRequestGet({ request, env }) {
     fetchEmail(dbA),
     fetchRevenue(dbA, env),
     fetchCalendar(env),
-    fetchTasks(dbA)
+    fetchTasks(dbA, env)
   ]);
 
   return jsonResponse({
@@ -199,15 +199,47 @@ async function fetchCalendar(env) {
   };
 }
 
-// ─── Tasks (sovdash_tasks — Sascha/shared; NEXT integration future) ───────────
-async function fetchTasks(db) {
-  const rows = await db.query('sovdash_tasks',
-    'select=id,title,description,status,owner,due_date,created_at,completed_at&order=created_at.desc&limit=100'
-  ).catch(() => []);
+// ─── Tasks (NEXT via next-sync-api + sovdash_tasks for Sascha/shared) ────────
+async function fetchTasks(db, env) {
+  const [nextResult, sovResult] = await Promise.allSettled([
+    fetchNextTasks(env),
+    db.query('sovdash_tasks',
+      'select=id,title,description,status,owner,due_date,created_at,completed_at&order=created_at.desc&limit=100'
+    ).catch(() => [])
+  ]);
 
-  const all = Array.isArray(rows) ? rows : [];
+  const nextTasks = nextResult.status === 'fulfilled' ? nextResult.value : [];
+  const sovRows   = Array.isArray(sovResult.value) ? sovResult.value : [];
+
+  // Normalize sovdash_tasks into same shape
+  const sovTasks = sovRows.map(t => ({
+    id:     t.id,
+    title:  t.title,
+    done:   t.status === 'done',
+    owner:  t.owner,
+    source: 'sovdash'
+  }));
+
+  const all  = [...nextTasks, ...sovTasks];
   return {
-    todo: all.filter(t => t.status === 'todo'),
-    done: all.filter(t => t.status === 'done').slice(0, 20)
+    todo: all.filter(t => !t.done),
+    done: all.filter(t =>  t.done).slice(0, 20)
   };
+}
+
+async function fetchNextTasks(env) {
+  if (!env.NEXT_PASSCODE) return [];
+  const res = await fetch('https://next-sync-api.gemma-serenity.workers.dev/api/data', {
+    headers: { 'X-Passcode': env.NEXT_PASSCODE }
+  });
+  if (!res.ok) return [];
+  const data = await res.json();
+  const raw = Array.isArray(data.tasks) ? data.tasks : [];
+  return raw.map(t => ({
+    id:     t.id   || String(Math.random()),
+    title:  t.title || t.text || t.name || '(untitled)',
+    done:   t.done === true || t.completed === true || t.status === 'done',
+    owner:  'gemma',
+    source: 'next'
+  }));
 }

@@ -13,16 +13,45 @@ export async function onRequestGet({ request, env }) {
   if (!session) return errorResponse('Unauthorized', 401);
 
   const db = supabase(env.SUPABASE_A_URL, env.SUPABASE_A_SERVICE_KEY);
-  const rows = await db.query('sovdash_tasks',
-    'select=id,title,description,status,owner,due_date,created_at,completed_at&order=created_at.desc&limit=100'
-  ).catch(() => []);
 
-  const all = Array.isArray(rows) ? rows : [];
+  const [nextRes, sovRes] = await Promise.allSettled([
+    fetchNextTasks(env),
+    db.query('sovdash_tasks',
+      'select=id,title,description,status,owner,due_date,created_at,completed_at&order=created_at.desc&limit=100'
+    ).catch(() => [])
+  ]);
+
+  const nextTasks = nextRes.status === 'fulfilled' ? nextRes.value : [];
+  const sovRows   = Array.isArray(sovRes.value) ? sovRes.value : [];
+  const sovTasks  = sovRows.map(t => ({
+    id: t.id, title: t.title, done: t.status === 'done', owner: t.owner, source: 'sovdash'
+  }));
+
+  const all = [...nextTasks, ...sovTasks];
   return jsonResponse({
     ok: true,
-    todo: all.filter(t => t.status === 'todo'),
-    done: all.filter(t => t.status === 'done').slice(0, 30)
+    todo: all.filter(t => !t.done),
+    done: all.filter(t =>  t.done).slice(0, 30)
   });
+}
+
+async function fetchNextTasks(env) {
+  if (!env.NEXT_PASSCODE) return [];
+  try {
+    const res = await fetch('https://next-sync-api.gemma-serenity.workers.dev/api/data', {
+      headers: { 'X-Passcode': env.NEXT_PASSCODE }
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    const raw = Array.isArray(data.tasks) ? data.tasks : [];
+    return raw.map(t => ({
+      id:     t.id || String(Math.random()),
+      title:  t.title || t.text || t.name || '(untitled)',
+      done:   t.done === true || t.completed === true || t.status === 'done',
+      owner:  'gemma',
+      source: 'next'
+    }));
+  } catch { return []; }
 }
 
 export async function onRequestPost({ request, env }) {
