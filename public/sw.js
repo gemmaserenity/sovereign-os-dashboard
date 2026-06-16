@@ -2,7 +2,7 @@
 // Caches the shell (HTML/CSS/JS) for offline availability.
 // API calls are always network-first (dashboard data must be fresh).
 
-const CACHE_NAME = 'sovdash-shell-v2';
+const CACHE_NAME = 'sovdash-shell-v3';
 const SHELL_FILES = ['/', '/index.html', '/style.css', '/app.js', '/manifest.json', '/favicon.svg', '/icon-192.png', '/icon-512.png'];
 
 self.addEventListener('install', e => {
